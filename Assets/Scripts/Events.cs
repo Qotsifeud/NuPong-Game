@@ -13,6 +13,7 @@ public class Events : MonoBehaviour
     public Button startButton;
     public TMP_Text titleText;
 
+    public TMP_Text[] playerTitles = new TMP_Text[2];
     public TMP_Text[] scoreText = new TMP_Text[2];
     int value; // Value is used for increasing the UI game scores.
     //*************************************************
@@ -53,6 +54,11 @@ public class Events : MonoBehaviour
         foreach(TMP_Text obj in scoreText)
         {
             obj.gameObject.SetActive(true);
+        }
+
+        foreach(TMP_Text obj in playerTitles)
+        {
+            obj.gameObject.SetActive(true); 
         }
 
         topBoundary.SetActive(true);
