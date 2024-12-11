@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BallMovement : MonoBehaviour
+public class Ball : MonoBehaviour
 {
     Events events;
 
@@ -12,7 +12,10 @@ public class BallMovement : MonoBehaviour
     Vector2 direction;
 
     [SerializeField]
-    float moveSpeed = 6.0f;
+    public float moveSpeed = 6.0f;
+    float savedSpeed;
+
+    public bool speedBoost = false;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +31,7 @@ public class BallMovement : MonoBehaviour
     void Update()
     {
         transform.position += (Vector3)direction * moveSpeed * Time.deltaTime;
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -40,10 +44,14 @@ public class BallMovement : MonoBehaviour
 
             moveSpeed += 0.2f;
         }
+        else if(collision.gameObject.tag == "Blocker" && speedBoost)
+        {
+            speedBoost = false;
+            moveSpeed = savedSpeed;
+        }
         else if(collision.gameObject.tag == "Goal")
         {
-            moveSpeed = 4.0f;
-            transform.position = new Vector2(0, 0);
+            moveSpeed = 6.0f;
             
             if(collision.gameObject.name == "leftGoal")
             {
@@ -60,17 +68,28 @@ public class BallMovement : MonoBehaviour
 
     Vector2 RandomStartingDirection()
     {
-        UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
+        int randomValue = UnityEngine.Random.Range(0, 2) * 2 - 1;
 
-        if (UnityEngine.Random.Range(0, 1) == 0)
+        if (randomValue == -1)
         {
             direction = new Vector2(-1, 0).normalized;
+            transform.position = new Vector2(-1, 0);
         }
         else
         {
             direction = new Vector2(1, 0).normalized;
+            transform.position = new Vector2(1, 0);
         }
 
         return direction;
+    }
+
+    public void activateSpeedBoost()
+    {
+        speedBoost = true;
+
+        savedSpeed = moveSpeed;
+
+        moveSpeed = moveSpeed * 1.5f;
     }
 }

@@ -1,33 +1,50 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Transactions;
 using TMPro;
+using Unity.Netcode;
+using Unity.Networking.Transport;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Events : MonoBehaviour
+public class Events : NetworkBehaviour
 {
+    bool isClientConnected = false;
+
+    public MultiplayerManager multiplayerManager;
+
     //UI Items
     //********************************************************
-    public Button startButton;
-    public TMP_Text titleText;
+    public Button startBtn, splayerBtn, mplayerBtn, localBtn, networkBtn, hostBtn, clientBtn;
+    public TMP_Text titleText, awaitingPlayerText;
 
     public TMP_Text[] playerTitles = new TMP_Text[2];
     public TMP_Text[] scoreText = new TMP_Text[2];
     int value; // Value is used for increasing the UI game scores.
-    //*************************************************
+    //********************************************************
 
     //Game Objects
     //********************************************************
-    public GameObject[] blockerObjects = new GameObject[2];
     public GameObject ball;
     public GameObject topBoundary;
     //********************************************************
 
+    public void Start()
+    {
+        multiplayerManager = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
+    }
+
     public void Update()
     {
-        startButton.onClick.AddListener(onStart);
+        startBtn.onClick.AddListener(startBtnClicked);
+        splayerBtn.onClick.AddListener(singlePlayerBtnClicked);
+        mplayerBtn.onClick.AddListener(multiPlayerBtnClicked);
+        localBtn.onClick.AddListener(localBtnClicked);
+        networkBtn.onClick.AddListener(networkBtnClicked);
+        hostBtn.onClick.AddListener(hostBtnClicked);
+        clientBtn.onClick.AddListener(clientBtnClicked);
     }
 
     public void goalScored(int goal)
@@ -46,28 +63,93 @@ public class Events : MonoBehaviour
         }
     }
 
-    public void onStart()
+    public void startBtnClicked()
+    {
+        splayerBtn.gameObject.SetActive(true);
+        mplayerBtn.gameObject.SetActive(true);
+
+        startBtn.gameObject.SetActive(false);
+
+    }
+
+    public void singlePlayerBtnClicked()
     {
         titleText.gameObject.SetActive(false);
-        startButton.gameObject.SetActive(false);
 
-        foreach(TMP_Text obj in scoreText)
+        gameStart(false);
+    }
+
+    public void multiPlayerBtnClicked()
+    {
+        splayerBtn.gameObject.SetActive(false);
+        mplayerBtn.gameObject.SetActive(false);
+
+        localBtn.gameObject.SetActive(true);
+        networkBtn.gameObject.SetActive(true);
+    }    
+
+    public void localBtnClicked()
+    {
+        localBtn.gameObject.SetActive(false);
+        networkBtn.gameObject.SetActive(false);
+
+        gameStart(false);
+    } 
+
+    public void networkBtnClicked()
+    {
+        localBtn.gameObject.SetActive(false);
+        networkBtn.gameObject.SetActive(false);
+
+        hostBtn.gameObject.SetActive(true);
+        clientBtn.gameObject.SetActive(true);
+    }
+
+    public void hostBtnClicked()
+    {
+        hostBtn.gameObject.SetActive(false);
+        clientBtn.gameObject.SetActive(false);
+
+        multiplayerManager.HostGame();
+        gameStart(true);
+    }
+
+    public void clientBtnClicked()
+    {
+        clientBtn.gameObject.SetActive(false);
+        hostBtn.gameObject.SetActive(false);
+
+        multiplayerManager.ClientJoin();
+        gameStart(true);
+    }
+    
+    public void gameStart(bool isNetworkGame)
+    {
+        foreach (TMP_Text obj in scoreText)
         {
             obj.gameObject.SetActive(true);
         }
 
-        foreach(TMP_Text obj in playerTitles)
+        foreach (TMP_Text obj in playerTitles)
         {
-            obj.gameObject.SetActive(true); 
+            obj.gameObject.SetActive(true);
         }
+
+        titleText.gameObject.SetActive(false);
 
         topBoundary.SetActive(true);
 
-        foreach (GameObject blocker in blockerObjects)
+        if(isNetworkGame)
         {
-            blocker.SetActive(true);
+            if(!NetworkManager.IsConnectedClient)
+            {
+                Debug.Log("not connected yet.");
+                awaitingPlayerText.gameObject.SetActive(true);
+            }
+            else
+            {
+                awaitingPlayerText.gameObject.SetActive(false);
+            }
         }
-
-        ball.SetActive(true);
     }
 }
