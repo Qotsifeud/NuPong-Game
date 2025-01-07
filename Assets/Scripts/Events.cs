@@ -11,8 +11,6 @@ using UnityEngine.UI;
 
 public class Events : NetworkBehaviour
 {
-    bool isClientConnected = false;
-
     public MultiplayerManager multiplayerManager;
 
     //UI Items
@@ -27,13 +25,14 @@ public class Events : NetworkBehaviour
 
     //Game Objects
     //********************************************************
-    public GameObject ball;
+    public GameObject player;
+    public GameObject ballPrefab;
     public GameObject topBoundary;
     //********************************************************
 
     public void Start()
     {
-        multiplayerManager = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
+        multiplayerManager = FindObjectOfType<MultiplayerManager>();
     }
 
     public void Update()
@@ -45,11 +44,14 @@ public class Events : NetworkBehaviour
         networkBtn.onClick.AddListener(networkBtnClicked);
         hostBtn.onClick.AddListener(hostBtnClicked);
         clientBtn.onClick.AddListener(clientBtnClicked);
+
+        
+
     }
 
     public void goalScored(int goal)
     {
-        if(goal == 0)
+        if (goal == 0)
         {
             value = int.Parse(scoreText[1].text);
             value += 1;
@@ -86,7 +88,7 @@ public class Events : NetworkBehaviour
 
         localBtn.gameObject.SetActive(true);
         networkBtn.gameObject.SetActive(true);
-    }    
+    }
 
     public void localBtnClicked()
     {
@@ -94,7 +96,7 @@ public class Events : NetworkBehaviour
         networkBtn.gameObject.SetActive(false);
 
         gameStart(false);
-    } 
+    }
 
     public void networkBtnClicked()
     {
@@ -121,8 +123,8 @@ public class Events : NetworkBehaviour
 
         multiplayerManager.ClientJoin();
         gameStart(true);
-    }
-    
+    }  
+
     public void gameStart(bool isNetworkGame)
     {
         foreach (TMP_Text obj in scoreText)
@@ -134,22 +136,35 @@ public class Events : NetworkBehaviour
         {
             obj.gameObject.SetActive(true);
         }
-
+        
         titleText.gameObject.SetActive(false);
 
         topBoundary.SetActive(true);
 
-        if(isNetworkGame)
-        {
-            if(!NetworkManager.IsConnectedClient)
-            {
-                Debug.Log("not connected yet.");
-                awaitingPlayerText.gameObject.SetActive(true);
-            }
-            else
-            {
-                awaitingPlayerText.gameObject.SetActive(false);
-            }
-        }
+        //if (isNetworkGame)
+        //{
+        //    if (connectedPlayers == 1)
+        //    {
+        //        Debug.Log("not connected yet.");
+        //        awaitingPlayerText.gameObject.SetActive(true);
+        //    }
+        //    else if (connectedPlayers == 2)
+        //    {
+        //        awaitingPlayerText.gameObject.SetActive(false);
+        //    }
+
+        //    switch (connectedPlayers)
+        //    {
+        //        case 1:
+        //            awaitingPlayerText.gameObject.SetActive(true);
+        //            break;
+        //        case 2:
+        //            awaitingPlayerText.gameObject.SetActive(false);
+        //            break;
+
+        //    }
+        //}
     }
+
+    
 }

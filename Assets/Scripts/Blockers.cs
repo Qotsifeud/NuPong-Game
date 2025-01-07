@@ -22,12 +22,15 @@ public class Blockers : NetworkBehaviour
     [SerializeField]
     private bool touchingTopBounds = false;
 
+    MultiplayerManager mpManager = new MultiplayerManager();
+
     // Start is called before the first frame update
     void Start()
     {
-        blockerPos.Value = this.transform.position;
 
-        if(IsHost)
+        mpManager = GameObject.Find("Multiplayer Manager").GetComponent<MultiplayerManager>();
+
+        if(IsServer)
         {
             leftBlocker = this.gameObject;
         }
@@ -40,6 +43,17 @@ public class Blockers : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+
+        if (IsServer && IsOwner)
+        {
+            this.transform.position = new Vector3(-7, 0, 0);
+            updateNetworkPosition();
+        }
+        else if (IsClient && IsOwner)
+        {
+            this.gameObject.transform.position = new Vector3(7, 0, 0);
+            updateNetworkPosition();
+        }
     }
 
     // Update is called once per frame
@@ -49,7 +63,7 @@ public class Blockers : NetworkBehaviour
         {
             if (!touchingBtmBounds)
             {
-                if (Input.GetKey(KeyCode.S) && this.gameObject.Equals(leftBlocker) || Input.GetKey(KeyCode.DownArrow) && this.gameObject.Equals(rightBlocker))
+                if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
                 {
                     if (Input.GetKey(KeyCode.LeftShift) && this.gameObject.Equals(leftBlocker) || Input.GetKey(KeyCode.RightShift) && this.gameObject.Equals(rightBlocker))
                     {
@@ -74,7 +88,7 @@ public class Blockers : NetworkBehaviour
 
             if (!touchingTopBounds)
             {
-                if (Input.GetKey(KeyCode.W) && this.gameObject.Equals(leftBlocker) || Input.GetKey(KeyCode.UpArrow) && this.gameObject.Equals(rightBlocker))
+                if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
                 {
                     if (Input.GetKey(KeyCode.LeftShift) && this.gameObject.Equals(leftBlocker) || Input.GetKey(KeyCode.RightShift) && this.gameObject.Equals(rightBlocker))
                     {
@@ -97,14 +111,14 @@ public class Blockers : NetworkBehaviour
                 }
             }
 
-            if (!touchingBtmBounds || !touchingTopBounds)
+            if (!touchingBtmBounds && gameObject.transform.rotation != new Quaternion(0, 0, 0, 0) || !touchingTopBounds && gameObject.transform.rotation != new Quaternion(0, 0, 0, 0))
             {
-                if (Input.GetKey(KeyCode.A) && this.gameObject.Equals(leftBlocker) || Input.GetKey(KeyCode.LeftArrow) && this.gameObject.Equals(rightBlocker))
+                if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
                 {
                     transform.Rotate(0, 0, 1 * spinSpeed * Time.deltaTime, Space.World);
                     updateNetworkPosition();
                 }
-                else if (Input.GetKey(KeyCode.D) && this.gameObject.Equals(leftBlocker) || Input.GetKey(KeyCode.RightArrow) && this.gameObject.Equals(rightBlocker))
+                else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
                 {
                     transform.Rotate(0, 0, -1 * spinSpeed * Time.deltaTime, Space.World);
                     updateNetworkPosition();
@@ -134,6 +148,8 @@ public class Blockers : NetworkBehaviour
         blockerPos.Value = transform.position;
         blockerRot.Value = transform.rotation;
     }
+
+    
 
     [ServerRpc]
     private void TouchingBoundariesServerRPC(int boundaryNumber, ulong clientId)

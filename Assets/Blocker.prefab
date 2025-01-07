@@ -14,7 +14,8 @@ GameObject:
   - component: {fileID: -4082311291670365810}
   - component: {fileID: -8975725399708157184}
   - component: {fileID: 4874890162841628599}
-  - component: {fileID: -3387858601041818873}
+  - component: {fileID: 159434558836737351}
+  - component: {fileID: -8186878208042922301}
   m_Layer: 0
   m_Name: Blocker
   m_TagString: Blocker
@@ -115,7 +116,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 0
+  m_Constraints: 1
 --- !u!114 &-4082311291670365810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,6 +152,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 6
   spinSpeed: 200
+  blockerPrefab: {fileID: 7110947322811154944}
   touchingBtmBounds: 0
   touchingTopBounds: 0
 --- !u!68 &4874890162841628599
@@ -213,7 +215,7 @@ EdgeCollider2D:
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
   m_UseAdjacentEndPoint: 0
---- !u!114 &-3387858601041818873
+--- !u!114 &159434558836737351
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -222,7 +224,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7110947322811154944}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Script: {fileID: 11500000, guid: 0253c49f54405f94da8c5e8d93e783b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   UseUnreliableDeltas: 0
@@ -244,3 +246,15 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &-8186878208042922301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7110947322811154944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

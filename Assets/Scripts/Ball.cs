@@ -1,15 +1,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Ball : MonoBehaviour
+public class Ball : NetworkBehaviour
 {
     Events events;
 
     Rigidbody2D rb;
 
-    Vector2 direction;
+    NetworkVariable<Vector2> direction = new NetworkVariable<Vector2>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    NetworkVariable<Vector2> ballPos = new NetworkVariable<Vector2>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+
 
     [SerializeField]
     public float moveSpeed = 6.0f;
@@ -30,7 +34,7 @@ public class Ball : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position += (Vector3)direction * moveSpeed * Time.deltaTime;
+        transform.position += (Vector3)direction.Value * moveSpeed * Time.deltaTime;
 
     }
 
@@ -38,9 +42,9 @@ public class Ball : MonoBehaviour
     {
         if(collision.gameObject.tag == "Blocker" || collision.gameObject.tag == "Boundary")
         {
-            Vector2 newDirection = Vector2.Reflect(direction, collision.contacts[0].normal);
+            Vector2 newDirection = Vector2.Reflect(direction.Value, collision.contacts[0].normal);
 
-            direction = newDirection;
+            direction.Value = newDirection;
 
             moveSpeed += 0.2f;
         }
@@ -72,16 +76,16 @@ public class Ball : MonoBehaviour
 
         if (randomValue == -1)
         {
-            direction = new Vector2(-1, 0).normalized;
+            direction.Value = new Vector2(-1, 0).normalized;
             transform.position = new Vector2(-1, 0);
         }
         else
         {
-            direction = new Vector2(1, 0).normalized;
+            direction.Value = new Vector2(1, 0).normalized;
             transform.position = new Vector2(1, 0);
         }
 
-        return direction;
+        return direction.Value;
     }
 
     public void activateSpeedBoost()
