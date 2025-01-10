@@ -13,23 +13,27 @@ public class Blockers : NetworkBehaviour
 
     GameObject leftBlocker, rightBlocker;
 
+    public GameObject downAnimEmitter, upAnimEmitter;
+
+    public GameObject ballPrefab, sppedGatePrefab;
+
     NetworkVariable<Vector3> blockerPos = new NetworkVariable<Vector3>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     NetworkVariable<Quaternion> blockerRot = new NetworkVariable<Quaternion>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     [SerializeField]
     private bool touchingBtmBounds = false;
 
+    bool ballSpawned = false;
+
     [SerializeField]
     private bool touchingTopBounds = false;
 
     MultiplayerManager mpManager = new MultiplayerManager();
+    Events events = new Events();
 
     // Start is called before the first frame update
     void Start()
     {
-
-        mpManager = GameObject.Find("Multiplayer Manager").GetComponent<MultiplayerManager>();
-
         if(IsServer)
         {
             leftBlocker = this.gameObject;
@@ -43,17 +47,22 @@ public class Blockers : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+        mpManager = GameObject.Find("Multiplayer Manager").GetComponent<MultiplayerManager>();
 
         if (IsServer && IsOwner)
         {
+            PlayerJoinedServerRpc();
             this.transform.position = new Vector3(-7, 0, 0);
             updateNetworkPosition();
         }
         else if (IsClient && IsOwner)
         {
+            PlayerJoinedServerRpc();
             this.gameObject.transform.position = new Vector3(7, 0, 0);
             updateNetworkPosition();
         }
+
+        
     }
 
     // Update is called once per frame
@@ -61,6 +70,25 @@ public class Blockers : NetworkBehaviour
     {
         if (IsOwner)
         {
+            if(events.gameOver == true)
+            {
+                this.GetComponent<NetworkObject>().Despawn(true);
+            }
+
+            if(IsServer)
+            {
+
+                if(mpManager.numberOfPlayers.Value == 2 && ballSpawned == false)
+                {
+                    Debug.Log("Function Called");
+                    PlayersConnectedServerRpc();
+                }
+            }
+
+
+            downAnimEmitter.SetActive(false);
+            upAnimEmitter.SetActive(false);
+
             if (!touchingBtmBounds)
             {
                 if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
@@ -83,6 +111,8 @@ public class Blockers : NetworkBehaviour
                     {
                         touchingTopBounds = false;
                     }
+
+                    downAnimEmitter.SetActive(true);
                 }
             }
 
@@ -108,6 +138,8 @@ public class Blockers : NetworkBehaviour
                     {
                         touchingBtmBounds = false;
                     }
+
+                    upAnimEmitter.SetActive(true);
                 }
             }
 
@@ -149,8 +181,6 @@ public class Blockers : NetworkBehaviour
         blockerRot.Value = transform.rotation;
     }
 
-    
-
     [ServerRpc]
     private void TouchingBoundariesServerRPC(int boundaryNumber, ulong clientId)
     {
@@ -173,5 +203,31 @@ public class Blockers : NetworkBehaviour
         { 
             touchingTopBounds = false; 
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void PlayerJoinedServerRpc()
+    {
+        mpManager.numberOfPlayers.Value += 1;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void PlayersConnectedServerRpc()
+    {
+        //awaitingPlayerText.gameObject.SetActive(false);
+
+        if (IsServer)
+        {
+            GameObject ballGameObject = Instantiate(ballPrefab, new Vector3(0, 0, 0), new Quaternion());
+            ballGameObject.GetComponent<NetworkObject>().Spawn(true);
+
+            GameObject speedGateObject = Instantiate(sppedGatePrefab, new Vector3(0, 0, 0), new Quaternion());
+            speedGateObject.GetComponent<NetworkObject>().Spawn(true);
+
+            Debug.Log("Function Called");
+            ballSpawned = true;
+        }
+
+
     }
 }

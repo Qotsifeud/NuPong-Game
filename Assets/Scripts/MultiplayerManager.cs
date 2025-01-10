@@ -4,49 +4,70 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
-public class MultiplayerManager : MonoBehaviour
+public class MultiplayerManager : NetworkBehaviour
 {
+    public static MultiplayerManager Instance { get; private set; }
+
     public NetworkVariable<int> numberOfPlayers = new NetworkVariable<int>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+    bool hostLaunched = false;
+    bool clientLaunched = false;
 
     public TMP_Text awaitingPlayerText;
     public GameObject ballPrefab;
 
+    public GameObject testing;
+    Events events;
+
+    public void Awake()
+    {
+        events = GameObject.FindGameObjectWithTag("GameController").GetComponent<Events>();
+    }
+
+    public void Update()
+    {
+        if(events.gameOver)
+        {
+            if (IsServer)
+            {
+                NetworkManager.Singleton.Shutdown();
+            }
+        }
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+
+        Debug.Log("MP Manager Spawned");
+    }
+
     public void HostGame()
     {
-        NetworkManager.Singleton.StartHost();
-        numberOfPlayers.Value += 1;
-
-        awaitingPlayerText.gameObject.SetActive(true);
+        if (hostLaunched == false)
+        {
+            NetworkManager.Singleton.StartHost();
+            hostLaunched = true;
+        }
     }
 
     public void ClientJoin()
     {
-        NetworkManager.Singleton.StartClient();
-        numberOfPlayers.Value += 1;
 
-        if(numberOfPlayers.Value == 2)
+        if (clientLaunched == false)
         {
-            PlayersConnectedServerRpc();
+            NetworkManager.Singleton.StartClient();
+        }
+
+        if (numberOfPlayers.Value == 2 && clientLaunched == false)
+        {
+            clientLaunched = true;
+        }
+        else
+        {
+            Debug.Log("Failed to start client: " + "\n" + "Player Numbers: " + numberOfPlayers.Value + "\n");
         }
     }
 
-    [ServerRpc]
-    public void PlayersConnectedServerRpc()
-    {
-        awaitingPlayerText.gameObject.SetActive(false);
-
-        GameObject instance = Instantiate(ballPrefab, new Vector3(0, 0, 0), new Quaternion());
-        instance.GetComponent<NetworkObject>().Spawn();
-
-
-        PlayersConnectedClientRpc();
-    }
-
-    [ClientRpc]
-    public void PlayersConnectedClientRpc()
-    {
-        
-
-        awaitingPlayerText.gameObject.SetActive(false);
-    }
+    
 }

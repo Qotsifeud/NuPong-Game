@@ -8,6 +8,9 @@ TagManager:
   - Boundary
   - Goal
   - Ball
+  - Leaderboard Items
+  - test
+  - Speedgate
   layers:
   - Default
   - TransparentFX
