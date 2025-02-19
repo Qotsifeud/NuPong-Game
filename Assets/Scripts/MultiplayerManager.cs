@@ -4,7 +4,7 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
-public class MultiplayerManager : NetworkBehaviour
+public class MultiplayerManager : MonoBehaviour
 {
     public static MultiplayerManager Instance { get; private set; }
 
@@ -26,27 +26,14 @@ public class MultiplayerManager : NetworkBehaviour
 
     public void Update()
     {
-        if(events.gameOver)
-        {
-            if (IsServer)
-            {
-                NetworkManager.Singleton.Shutdown();
-            }
-        }
-    }
 
-    public override void OnNetworkSpawn()
-    {
-        base.OnNetworkSpawn();
-
-        Debug.Log("MP Manager Spawned");
     }
 
     public void HostGame()
     {
         if (hostLaunched == false)
         {
-            NetworkManager.Singleton.StartHost();
+            RNetworkManager.Singleton.StartServer();
             hostLaunched = true;
         }
     }
@@ -56,17 +43,17 @@ public class MultiplayerManager : NetworkBehaviour
 
         if (clientLaunched == false)
         {
-            NetworkManager.Singleton.StartClient();
+            RNetworkManager.Singleton.StartClient();
         }
 
-        if (numberOfPlayers.Value == 2 && clientLaunched == false)
-        {
-            clientLaunched = true;
-        }
-        else
-        {
-            Debug.Log("Failed to start client: " + "\n" + "Player Numbers: " + numberOfPlayers.Value + "\n");
-        }
+        //if (numberOfPlayers.Value == 2 && clientLaunched == false)
+        //{
+        //    clientLaunched = true;
+        //}
+        //else
+        //{
+        //    Debug.Log("Failed to start client: " + "\n" + "Player Numbers: " + numberOfPlayers.Value + "\n");
+        //}
     }
 
     

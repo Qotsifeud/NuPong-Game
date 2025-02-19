@@ -1458,8 +1458,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 499396746}
-  - component: {fileID: 499396745}
-  - component: {fileID: 499396744}
+  - component: {fileID: 499396747}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -1467,70 +1466,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &499396744
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 2224359730547912290, guid: a6b7d2f93218c30469c31e1084d9b99b, type: 3}
-  m_PrefabInstance: {fileID: 3030304501770318549}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 499396743}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6960e84d07fb87f47956e7a81d71c4e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ProtocolType: 0
-  m_MaxPacketQueueSize: 128
-  m_MaxPayloadSize: 6144
-  m_HeartbeatTimeoutMS: 500
-  m_ConnectTimeoutMS: 1000
-  m_MaxConnectAttempts: 60
-  m_DisconnectTimeoutMS: 30000
-  ConnectionData:
-    Address: 127.0.0.1
-    Port: 7778
-    ServerListenAddress: 127.0.0.1
-  DebugSimulator:
-    PacketDelayMS: 0
-    PacketJitterMS: 0
-    PacketDropRate: 0
---- !u!114 &499396745
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 8015545849386548009, guid: a6b7d2f93218c30469c31e1084d9b99b, type: 3}
-  m_PrefabInstance: {fileID: 3030304501770318549}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 499396743}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 593a2fe42fa9d37498c96f9a383b6521, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  NetworkConfig:
-    ProtocolVersion: 0
-    NetworkTransport: {fileID: 499396744}
-    PlayerPrefab: {fileID: 7110947322811154944, guid: 7af2d328ef4eb6c44b8ee871aac0e0da, type: 3}
-    Prefabs:
-      NetworkPrefabsLists:
-      - {fileID: 11400000, guid: dc9337119689c474ea14a89acab71aac, type: 2}
-    TickRate: 30
-    ClientConnectionBufferTimeout: 10
-    ConnectionApproval: 0
-    ConnectionData: 
-    EnableTimeResync: 0
-    TimeResyncInterval: 30
-    EnsureNetworkVariableLengthSafety: 0
-    EnableSceneManagement: 1
-    ForceSamePrefabs: 1
-    RecycleNetworkIds: 1
-    NetworkIdRecycleDelay: 120
-    RpcHashSize: 0
-    LoadSceneTimeOut: 120
-    SpawnTimeout: 10
-    EnableNetworkLogs: 1
-    OldPrefabList: []
-  RunInBackground: 1
-  LogLevel: 1
 --- !u!4 &499396746
 Transform:
   m_ObjectHideFlags: 0
@@ -1546,6 +1481,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &499396747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 499396743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da0effa49f945054d95b9325ea27598b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  port: 7777
+  maxClientNum: 2
+  ip: 127.0.0.1
 --- !u!1 &573089493
 GameObject:
   m_ObjectHideFlags: 0
@@ -1973,6 +1923,7 @@ GameObject:
   - component: {fileID: 631837750}
   - component: {fileID: 631837749}
   - component: {fileID: 631837748}
+  - component: {fileID: 631837752}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2065,6 +2016,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1920.0001, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &631837752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 631837747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48bf5446875eb444287f63b08c7ecfde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  connectUI: {fileID: 1105851886}
+  usernameField: {fileID: 369826114}
+  gameUI: {fileID: 1962241367}
 --- !u!1001 &660253285
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2132,6 +2098,14 @@ PrefabInstance:
     - target: {fileID: 3027170230876394797, guid: 7af2d328ef4eb6c44b8ee871aac0e0da, type: 3}
       propertyPath: m_BodyType
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4465417903469196202, guid: 7af2d328ef4eb6c44b8ee871aac0e0da, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4094089162
+      objectReference: {fileID: 0}
+    - target: {fileID: 4842498925641069681, guid: 7af2d328ef4eb6c44b8ee871aac0e0da, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 852674525
       objectReference: {fileID: 0}
     - target: {fileID: 4874890162841628599, guid: 7af2d328ef4eb6c44b8ee871aac0e0da, type: 3}
       propertyPath: m_IsTrigger
@@ -2632,7 +2606,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 693165018}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 631837752}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: HostClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &704016560 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7110947322811154944, guid: 7af2d328ef4eb6c44b8ee871aac0e0da, type: 3}
@@ -3265,11 +3251,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4542229114956539212, guid: a6c8b557e0fd1164ea4923bb197a3625, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 12.042342
+      value: 13.85
       objectReference: {fileID: 0}
     - target: {fileID: 4542229114956539212, guid: a6c8b557e0fd1164ea4923bb197a3625, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.1085465
+      value: -1.11
       objectReference: {fileID: 0}
     - target: {fileID: 4542229114956539212, guid: a6c8b557e0fd1164ea4923bb197a3625, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3813,11 +3799,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4542229114956539212, guid: a6c8b557e0fd1164ea4923bb197a3625, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.137658
+      value: -7.98
       objectReference: {fileID: 0}
     - target: {fileID: 4542229114956539212, guid: a6c8b557e0fd1164ea4923bb197a3625, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.1085465
+      value: -1.11
       objectReference: {fileID: 0}
     - target: {fileID: 4542229114956539212, guid: a6c8b557e0fd1164ea4923bb197a3625, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5674,7 +5660,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1960973063}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 631837752}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: ConnectClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1962241367
 GameObject:
   m_ObjectHideFlags: 0
@@ -5690,7 +5688,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1962241368
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6513,7 +6511,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: NetworkManager
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
