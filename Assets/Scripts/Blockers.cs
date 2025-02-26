@@ -86,6 +86,9 @@ public class Blockers : NetworkBehaviour
             }
 
 
+            downAnimEmitter.SetActive(false);
+            upAnimEmitter.SetActive(false);
+
             if (!touchingBtmBounds)
             {
                 if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
@@ -109,15 +112,7 @@ public class Blockers : NetworkBehaviour
                         touchingTopBounds = false;
                     }
 
-                    if (blockerRot.Value.z > 0 && blockerRot.Value.z < 90)
-                    {
-                        downAnimEmitter.SetActive(true);
-                    }
-                    else if (blockerRot.Value.z >= 90)
-                    {
-
-                        upAnimEmitter.SetActive(true);
-                    }
+                    downAnimEmitter.SetActive(true);
                 }
             }
 

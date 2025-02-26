@@ -43,7 +43,7 @@ public class Events : NetworkBehaviour
 
     public bool gameOver;
     public float timer;
-    float timeRemaining = 60.0f;
+    float timeRemaining = 30.0f;
     //********************************************************
 
     public void Start()
@@ -144,14 +144,9 @@ public class Events : NetworkBehaviour
         leaderboardItems.SetActive(false);
         backBtn.gameObject.SetActive(false);
 
-        usernameField.gameObject.SetActive(true);
-        submitBtn.gameObject.SetActive(true);
-        gameOverText.gameObject.SetActive(false);
-
         hostBtn.gameObject.SetActive(true);
         clientBtn.gameObject.SetActive(true);
         leaderboardBtn.gameObject.SetActive(true);
-
     }
 
     public void leaderboardBtnClicked()
@@ -212,9 +207,6 @@ public class Events : NetworkBehaviour
 
     public void gameStart(bool isNetworkGame)
     {
-        timeRemaining = 60.0f;
-        gameOver = false;
-
         foreach (TMP_Text obj in scoreText)
         {
             obj.gameObject.SetActive(true);
@@ -266,29 +258,25 @@ public class Events : NetworkBehaviour
 
         startTimer.Value = false;
 
-        gameOver = true;
-
         timerText.gameObject.SetActive(false);
-
-        titleText.gameObject.SetActive(true);
 
         foreach (TMP_Text obj in scoreText)
         {
-            obj.gameObject.SetActive(false);
+            obj.gameObject.SetActive(true);
         }
 
         foreach (TMP_Text obj in playerTitles)
         {
-            obj.gameObject.SetActive(false);
+            obj.gameObject.SetActive(true);
         }
 
         if (hostScore.Value > clientScore.Value)
         {
-            gameOverText.text = "Game Over!" + "\n" + "Host Wins!";
+            gameOverText.text = "Game Over! Host Wins!";
         }
         else if (clientScore.Value > hostScore.Value)
         {
-            gameOverText.text = "Game Over!" + "\n" + "Client Wins!";
+            gameOverText.text = "Game Over! Client Wins!";
         }
         else
         {
@@ -319,13 +307,16 @@ public class Events : NetworkBehaviour
             hostScore.Value += 1;
         }
 
-        GoalScoredClientRpc();
+        GoalScoredClientRpc(hostScore.Value, clientScore.Value);
     }
 
     [ClientRpc]
-    public void GoalScoredClientRpc()
+    public void GoalScoredClientRpc(int hostScoreLocal, int clientScoreLocal)
     {
-        scoreText[0].text = hostScore.Value.ToString();
-        scoreText[1].text = clientScore.Value.ToString();
+        hostScoreLocal = hostScore.Value;
+        clientScoreLocal = clientScore.Value;
+
+        scoreText[0].text = hostScoreLocal.ToString();
+        scoreText[1].text = clientScoreLocal.ToString();
     }
 }
